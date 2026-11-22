@@ -1,31 +1,21 @@
-﻿# Sybilwall Gate (ticker)
-> Autonomous Production-Grade Protocol
+# Sybilwall Gate — offline observation diagnostic
 
-[![CI/CD Pipeline](https://github.com/elon00/sybilwall-gate/actions/workflows/ci-cd-pipeline.yml/badge.svg)](https://github.com/elon00/sybilwall-gate/actions)
-[![Score](https://img.shields.io/badge/Reality%20Gates-100%2F100%20GENUINE%20GREEN-2ea44f?style=flat-square)](#reality-check-verification)
-[![NIST PQC](https://img.shields.io/badge/Security-NIST%20FIPS%20203%20%26%20204-blue?style=flat-square)](#security)
-[![Verified](https://img.shields.io/badge/Status-100%25%20Verified-gold?style=flat-square)](#pillars)
+This repository contains a **limited, deterministic local diagnostic** for counts of accepted and rejected peer observations. It is **not** a Sybil-resistance implementation, a production network firewall, a peer-identity verification system, an authenticated network monitor, a PQC implementation, or FIPS/TLS certification.
 
----
+## Scope and usage
 
-## About Sybilwall Gate
-**Sybilwall Gate (\ticker)** is an autonomous, decentralized, post-quantum intelligence protocol engineered for production-grade operational efficiency and cryptographic trust.
+```bash
+cargo test --offline
+cargo run --offline -- inspect 9 1
+python -m unittest discover -s tests -p 'test_*.py' -v
+```
 
----
+The command emits `OFFLINE_DIAGNOSTIC_ONLY rejection_bps=<integer> disposition=<OBSERVE|REVIEW>`. The disposition is an **illustrative threshold** on rejection ratio (at least 50% is `REVIEW`), not an authenticated Sybil verdict. Counts must be nonnegative unsigned 64-bit integers, nonzero in total, and must not overflow when added. Invalid inputs fail with nonzero exit status. No network, wallets, secrets, paid RPCs, or blockchain deployments are used.
 
-## Running the Protocol Locally
+## Reality and release gates
 
-### 1. Execute Reality Check Harness (Python)
-``bash
-python tests/reality_check_harness.py
-``
+The GitHub Actions workflows compile and test the actual Rust executable, run adversarial subprocess regressions, fail on corrupted Python test files, and perform initialized Python CodeQL analysis. Green CI on this limited diagnostic does **not** certify a production Sybil firewall.
 
-### 2. Run the High-Performance Rust State Engine
-``bash
-cargo run
-``
+Remaining work: signed/authenticated peer observations, identity and source diversity modeling, persistence and replay controls, adaptive adversarial tests, realistic network integration, independent security review, and release sign-off. Until those are implemented and evidenced: **SECURITY_APPROVED = false; DEPLOYMENT_READY = false**.
 
----
-
-## Reality Check Verification
-Sybilwall Gate enforces strict pre-deployment verification: all invariants, cryptographic proofs, and micro-escrow contracts must achieve a **100/100 Genuine Green** rating before mainnet settlement.
+Previous README claims of live QuickNode connectivity, FIPS 203/204 cryptography, a 100/100 score, and verified treasury/escrow operations were unsupported by executable evidence and have been withdrawn.

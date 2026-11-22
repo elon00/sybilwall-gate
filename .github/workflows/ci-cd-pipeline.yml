@@ -1,15 +1,21 @@
-﻿name: CI/CD Pipeline
-on: [push, pull_request]
+name: Offline Peer Observation Regression
+on:
+  push:
+    branches: [main, 'audit/**']
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
 jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Smoke Tests
-        run: python tests/reality_check_harness.py
-      - name: CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+      - name: Verify Rust formatting
+        run: cargo fmt --all -- --check
+      - name: Compile and run Rust unit tests (offline)
+        run: cargo test --offline
+      - name: Compile Python test sources (fail closed)
+        run: python -m compileall -q tests
+      - name: Execute real Rust CLI subprocess regressions
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
